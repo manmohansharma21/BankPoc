@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// Post represents a post entity.
+// Post represents a post entity. Model for the DB.
 type Post struct {
 	ID        int       `json:"id" gorm:"primaryKey"`         //  //decorating with the JSON tags with which names we need to expose the fields.	The unique identifier for the post.
 	Title     string    `json:"title" gorm:"unique;not null"` //  Separate JSON and GORM tags with spaces. The title of the post.
@@ -14,6 +14,7 @@ type Post struct {
 	CreatedAt time.Time `json:"created_at"`                   // The timestamp when the post was created.
 }
 
+// Model for the JSON payload.
 type PostPayload struct {
 	Title   string `json:"title"`
 	Content string `json:"content"`

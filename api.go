@@ -34,15 +34,17 @@ func (s *APIServer) Run() { // Dependency injection via receiver argument
 
 	router := mux.NewRouter()
 
+	//Adding Routes to Endpoints
 	router.HandleFunc("/welcome", func(w http.ResponseWriter, r *http.Request) {
 		s.handleGreet(w, r)
 	})
-	router.HandleFunc("/post", s.handleGetPost)
+	router.HandleFunc("/post", s.handleGetPost) //adding handlers to the routes to endpoints
+	router.HandleFunc("/post/{id}", s.handleGetPostById)
 	router.HandleFunc("/post/createPayload", s.handleCreatePost)
 	//s.interruptDemo()
 
 	fmt.Printf("Server starting on address %s", s.addr)
-	http.ListenAndServe(s.addr, router) //To Start the Server
+	http.ListenAndServe(s.addr, router) //To Start the Server, spinning up the server
 }
 
 // migrate(): to create table schemas in DB, to be run once in the beginning

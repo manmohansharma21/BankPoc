@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
+
+	"github.com/gorilla/mux"
 )
 
 type GreetResponse struct {
@@ -57,6 +60,35 @@ func (s *APIServer) handleGetPost(w http.ResponseWriter, r *http.Request) {
 		Title:     "Golang-Bank-POC",
 		Content:   "awesome",
 		CreatedAt: time.Now(),
+	}
+	json.NewEncoder(w).Encode(res)
+}
+
+func (s *APIServer) handleGetPostById(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		w.WriteHeader(400) //Response code for bad request
+		w.Write([]byte("Method not supported"))
+		return
+	}
+
+	// Extract the 'id' parameter from the URL using mux.Vars(r)["id"]
+	// and convert it to an integer using strconv.Atoi. Any potential error
+	// is stored in the 'err' variable.
+	id, err := strconv.Atoi(mux.Vars(r)["id"]) //Extract the id from the Params
+	if err != nil {                            //handler handling the errors
+		w.WriteHeader(400)
+		w.Write([]byte("\nValid integer id is required\n"))
+		return
+	}
+
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	res, err := s.storage.getPost(id)
+	if err != nil {
+		w.WriteHeader(400)
+		w.Write([]byte("\nid does not exist\n"))
+		return
 	}
 	json.NewEncoder(w).Encode(res)
 }

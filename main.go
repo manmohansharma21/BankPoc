@@ -10,7 +10,7 @@ func main() {
 		panic("failed to connect to the database")
 	}
 
-	addr := ":3024"
+	addr := ":3029"
 	server1 := newAPIServer(addr, db) //server2:= newAPIServer(":4000")
 	server1.Run()
 

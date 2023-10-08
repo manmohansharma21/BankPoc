@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -103,10 +104,19 @@ func (s *APIServer) handleCreatePost(w http.ResponseWriter, r *http.Request) {
 	err = s.storage.persistPost(&post)
 	if err != nil {
 		// Handle the error, log it, and respond with an error status code.
-		fmt.Println(err)
-		w.WriteHeader(http.StatusInternalServerError) //w.WriteHeader(500)
-		w.Write([]byte("\nSomething went wrong while creating your post structure\n"))
-		w.Write([]byte(err.Error()))
+		if IsUniqueConstraintViolationError(err) {
+			// Handle unique key constraint violation error.
+			w.WriteHeader(http.StatusConflict) // 409 Conflict status code.
+			w.Write([]byte("\nUnique key constraint violation\n"))
+			w.Write([]byte(string(http.StatusConflict)))
+		} else {
+			// Handle other database errors.
+			fmt.Println(err)
+			w.WriteHeader(http.StatusInternalServerError) // 500 Internal Server Error. //w.WriteHeader(500); Respond with a 500 Bad Request status code.
+			w.Write([]byte("\nSomething went wrong while creating your post structure\n"))
+			w.Write([]byte(err.Error()))
+			w.Write([]byte(string(http.StatusInternalServerError)))
+		}
 		return
 	}
 
@@ -116,6 +126,12 @@ func (s *APIServer) handleCreatePost(w http.ResponseWriter, r *http.Request) {
 	// Respond with a success message.
 	w.Write([]byte("\nPost created"))
 
+}
+
+func IsUniqueConstraintViolationError(err error) bool {
+	// Check if the error message or type indicates a unique constraint violation.
+	return strings.Contains(err.Error(), "unique constraint violation") ||
+		strings.Contains(err.Error(), "duplicate key")
 }
 
 /*

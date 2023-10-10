@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"time"
 
 	"gorm.io/gorm"
@@ -26,4 +27,44 @@ type PostRepository interface { //PostRepository to follow Go's convention of us
 
 type Storage struct {
 	db *gorm.DB
+}
+
+type KLoginPayload struct {
+	clientId     string
+	username     string
+	password     string
+	grantType    string
+	clientSecret string
+}
+
+type LoginPayload struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type Client struct {
+	httpClient *http.Client
+}
+
+type KLoginRes struct {
+	AccessToken string `json:"access_token"`
+}
+
+type LoginRes struct {
+	AccessToken string `json:"access_token"`
+}
+
+type KIntrospectPayload struct {
+	clientId     string
+	clientSecret string
+	token        string
+}
+
+type IntrospectPayload struct {
+	AccessToken string `json:"access_token"`
+}
+
+type introspectRes struct {
+	// Body interface{} `json:"body"`
+	Active bool `json:"active"`
 }

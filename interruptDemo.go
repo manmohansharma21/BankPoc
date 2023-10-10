@@ -68,7 +68,7 @@ func (s *APIServer) interruptDemo() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	// Register the handler function for the "/myroute" path.
+	// REGISTER the handler function for the "/myroute" path.
 	http.HandleFunc("/myroute", s.handleInterrupts)
 
 	// Start your HTTP server.

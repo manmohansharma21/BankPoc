@@ -12,6 +12,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// To expose a struct field for JSON encoding and make it accessible to clients (e.g., Postman), capitalize the field name.
+// JSON tags are specified in lowercase and define the JSON keys used in the response.
 type GreetResponse struct {
 	Greeting string `json:"greeting"`
 }
@@ -31,7 +33,7 @@ func (s *APIServer) handleGreet(w http.ResponseWriter, r *http.Request) {
 
 	// Set the Content-Type header to application/json.
 	// This header informs the client that the response body contains JSON data.
-	w.Header().Add("Content-Type", "application/json")
+	w.Header().Add("Content-Type", "application/json") // set the Content-Type header to indicate JSON content to be returned.
 
 	// Respond with a 200 OK status code.
 	w.WriteHeader(http.StatusOK)
@@ -41,8 +43,81 @@ func (s *APIServer) handleGreet(w http.ResponseWriter, r *http.Request) {
 		Greeting: "==============Jai Jai ShreeRadhaKrishn============",
 	}
 
-	// Encode the GreetResponse struct as JSON and write it to the response body.
-	json.NewEncoder(w).Encode(res)
+	// Encode the GreetResponse struct as JSON and write it to the response body to be sent to the client.
+	json.NewEncoder(w).Encode(res) // serialize a Go struct to JSON and write it to the response without need of an intermediate byte slice.
+}
+
+func (s *APIServer) handleLogin(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		w.WriteHeader(400) //Response code for bad request
+		w.Write([]byte("Method not supported"))
+		return
+	}
+
+	payload := new(LoginPayload) // Reading from the body ( on Postman for testing)
+	err := json.NewDecoder(r.Body).Decode(payload)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Invalid Payload"))
+		return
+	}
+
+	kPayload := &KLoginPayload{
+		clientId:     "bankpoc-auth",
+		username:     payload.Username,
+		password:     payload.Password,
+		grantType:    "password",
+		clientSecret: "gYCWXhHVgWH4ImXfhxmL8C0oAa3mQZUA",
+	}
+
+	kres, err := s.client.login(kPayload)
+	if err != nil {
+		w.WriteHeader(400)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	// res := &LoginRes{
+	// 	AccessToken: kres.AccessToken,
+	// }
+
+	w.Header().Add("content-Type", "application/json")
+	w.WriteHeader(200)
+	json.NewEncoder(w).Encode(kres)
+
+}
+
+func (s *APIServer) handleIntrospect(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		w.WriteHeader(400) //Response code for bad request
+		w.Write([]byte("Method not supported"))
+		return
+	}
+
+	payload := new(IntrospectPayload)
+	err := json.NewDecoder(r.Body).Decode(payload) // Reading from the body ( on Postman for testing)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Invalid Payload"))
+		return
+	}
+
+	iPayload := &KIntrospectPayload{
+		clientId:     "bankpoc-auth",
+		clientSecret: "gYCWXhHVgWH4ImXfhxmL8C0oAa3mQZUA",
+		token:        payload.AccessToken,
+	}
+
+	ires, err := s.client.introspect(iPayload)
+	if err != nil {
+		w.WriteHeader(400)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	w.Header().Add("content-Type", "application/json")
+	w.WriteHeader(200)
+	json.NewEncoder(w).Encode(ires)
 }
 
 func (s *APIServer) handleGetPost(w http.ResponseWriter, r *http.Request) {
@@ -205,4 +280,24 @@ Body gets printed; and console prints the logs we provisioned.
 In contrast, log.Print is typically used for logging, and it might not provide the same level of detail when printing complex types like structs. However, as mentioned earlier, you can use log.Printf with the %+v verb to achieve a similar result that includes field names and values.
 
 So, both fmt.Print(payload) and log.Printf("%+v", payload) are valid ways to print the payload struct, with the latter providing more detailed output suitable for debugging and logging.
+*/
+
+/*
+You can directly write the JSON response to the ResponseWriter without explicitly marshaling it to JSON using json.Marshal. In fact, the code you provided is a valid and efficient way to send JSON responses in a Go web application.
+
+The use of json.NewEncoder(w).Encode(res) is a concise way to serialize a Go struct to JSON and write it to the response. It takes advantage of the json.NewEncoder to efficiently encode and stream the JSON data directly to the response writer without the need for an intermediate byte slice.
+
+Here's why this approach is often preferred:
+
+Efficiency: json.NewEncoder can efficiently encode large JSON responses without the need to store the entire JSON in memory as a byte slice. It serializes the data in chunks, making it memory-efficient.
+Streamlined Code: The combination of json.NewEncoder and Encode is concise and idiomatic, making the code more readable and maintainable.
+Concurrency: This approach supports streaming and can be beneficial when dealing with long or continuously generated JSON responses in a concurrent environment.
+Overall, while you can choose to marshal the struct to JSON and then write it to the response, the approach you provided using json.NewEncoder and Encode is a common and efficient pattern for handling JSON responses in Go web applications. It's a good practice to use it when applicable, especially for large or streaming responses.
+*/
+
+/*
+Serialization is the process of converting structured data, such as objects or data structures, into a format that can be easily stored, transmitted, or reconstructed later. This serialized format is typically a linear sequence of bytes, often in a specific encoding like JSON, XML, or binary formats.
+Common serialization formats include JSON, XML, Protocol Buffers, and more. Each format has its advantages and is suited for different use cases.
+
+In the context of Go and many other programming languages, serialization often involves converting data structures (e.g., structs, objects) into a format that can be stored, transmitted, or saved to disk, and then converting it back into the original data structure when needed. Libraries and tools for serialization, such as the encoding/json package in Go, make this process straightforward.
 */

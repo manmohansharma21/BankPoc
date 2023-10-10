@@ -81,6 +81,35 @@ To install BankPoc, follow these steps:
 
 By following these steps, users should be able to clone, set up, build, and run your Go application with ease.
 
+### Keycloak
+Step 1: Create a user. You can take its carl bash from developer console network tab fetch/XHR tab by pressing F12, and paste it in Postman to generate the URL endpoint automatically.
+
+Step 2: Create password for the created user (non-temporary password).
+
+Step 3: Create a client of "OpenID Connect" type and keep track of its secret found in dashboard.
+
+Step 4: To fetch token for login, hit the Keycloak API endpoint:
+             http://localhost:8080/realms/bankpoc/protocol/openid-connect/token
+            
+             with body parameters ( x-www-form-urlencoded ) as:
+             client_id=<to be taken from Keycloak API> #bankpoc
+             username=<username>
+             password=<password>
+             grant_type=password #Value is literal "password" here.
+             client_secret=<value> # Taken from the Keycloak dashboard.
+         #  Body parameters ( x-www-form-urlencoded ) while hitting the keycloak API: Key values in params but were to be passed in body section x-www-form-urlencoded subsection, then only they work
+
+Step 5: Take the token from the response generated in the above step and use in hitting the Keycloak API:
+            http://localhost:8080/realms/bankpoc/protocol/openid-connect/token/introspect
+          with body parameters ( x-www-form-urlencoded ) as:
+             client_secret=<value> # Taken from the Keycloak dashboard.
+             token=<token from above token api response>
+             client_id=<taken from Keycloak dashboard> #bankpoc
+            
+          #  Body parameters ( x-www-form-urlencoded ) while hitting the keycloak API: Key values in params but were to be passed in body section x-www-form-urlencoded subsection, then only they work.
+
+
+
 ### Usage
 
 ...
@@ -103,3 +132,7 @@ If your application requires any configuration, specify where users should add c
 ## License
 
 [GitHub Repository](https://github.com/manmohansharma21/BankPoc)
+
+
+### Rebasing
+ Use 'esc' key to come out of 'insert' mode and type ':wq' to save and exit.

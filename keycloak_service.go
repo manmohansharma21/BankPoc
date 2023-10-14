@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
@@ -32,6 +34,7 @@ func (c *Client) login(payload *KLoginPayload) (*KLoginRes, error) {
 	if err != nil {                   // The response (resp) and any potential error (err) are returned.
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	if err != nil {
 		return nil, err
@@ -68,6 +71,7 @@ func (c *Client) introspect(payload *KIntrospectPayload) (*introspectRes, error)
 	if err != nil {                   // The response (resp) and any potential error (err) are returned.
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	if err != nil {
 		return nil, err
@@ -75,6 +79,14 @@ func (c *Client) introspect(payload *KIntrospectPayload) (*introspectRes, error)
 	if resp.StatusCode != http.StatusOK {
 		return nil, errors.New("something went wrong while talking to Keycloak login")
 	}
+
+	// Read the response boy
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println((string)(body))
 
 	introspectRes := &introspectRes{}
 	json.NewDecoder(resp.Body).Decode(introspectRes)

@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"gorm.io/driver/postgres"
@@ -14,4 +14,3 @@ func getDB(dbUrl string) (*gorm.DB, error) {
 	return db, err
 
 }
-

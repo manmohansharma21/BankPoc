@@ -1,4 +1,4 @@
-package main
+package app
 
 // Pinging the database for the desired output and DB interactions.
 

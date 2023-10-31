@@ -136,3 +136,37 @@ If your application requires any configuration, specify where users should add c
 
 ### Rebasing
  Use 'esc' key to come out of 'insert' mode and type ':wq' to save and exit.
+
+
+
+
+ #ADD
+
+  TO RUN docker-compose on MAC in case of docker command not found error:
+
+ls -l /usr/local/bin | grep docker-compose
+ls /usr/local/bin | grep docker-compose
+
+export PATH="/usr/local/bin:$PATH"
+
+/usr/local/bin/docker-compose up
+
+source ~/.bashrc
+
+It looks like you were able to resolve the issue by sourcing your .bashrc file. This likely refreshed your environment variables and made the docker-compose command available. The Docker Compose command should now work as expected. Run ut after setting the environment, then it works.
+The source command, when used in a shell like Bash or Zsh, is used to execute commands from a file within the current shell session. In your case, when you run source ~/.bashrc, it executes the commands found in the ~/.bashrc file, which is typically used to set up environment variables, configure your shell, and define various aliases and functions.
+
+docker-compose up
+docker-compose down
+docker-compose -f mysql-service.yaml up -d
+docker-compose -f docker-compose.yaml -f mysql-service.yaml up -d
+docker-compose -f docker-compose.yaml -f mysql-service.yaml down
+
+
+If modules not found then create build file and then try to run the same.
+
+
+* If the docker desktop is not running then, this will give this output:
+Manmohans-MacBook-Air:docker manmohansharma$ source ~/.bashrc
+Manmohans-MacBook-Air:docker manmohansharma$ docker-compose up
+Cannot connect to the Docker daemon at unix:///Users/manmohansharma/.docker/run/docker.sock. Is the docker daemon running?

@@ -49,3 +49,17 @@ func NewValidationError(message string) *AppError {
 404 is for status not found.
 301?
 */
+
+func NewAuthenticationError(message string) *AppError {
+	return &AppError{
+		Message: message,
+		Code:    http.StatusUnauthorized,
+	}
+}
+
+func NewAuthorizationError(message string) *AppError {
+	return &AppError{
+		Message: message,
+		Code:    http.StatusForbidden,
+	}
+}

@@ -12,6 +12,7 @@ func sanityCheck() {
 		log.Fatal("Environment variable not defined")
 	}
 }
+
 func Start() { //If we do not expose by capitalizing, it will not be accessible outside app directory.
 
 	fmt.Println("=============Jai Jai Shree RadhaKrishn========")

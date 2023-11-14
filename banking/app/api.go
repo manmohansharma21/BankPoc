@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/manmohansharma21/bankpoc/domain"
-	"github.com/manmohansharma21/bankpoc/service"
+	"github.com/manmohansharma21/bankpoc/banking/domain"
+	"github.com/manmohansharma21/bankpoc/banking/service"
 )
 
 type APIServer struct {
@@ -41,6 +41,9 @@ func (s *APIServer) Run() { // Dependency injection via receiver argument
 	router.HandleFunc("/customers/{customer_id:[0-9]+}/account", ah.NewAcount).Methods(http.MethodPost) // URL segmenting, retrieving information URL.
 
 	router.HandleFunc("/customers", createCustomer).Methods(http.MethodPost) //Same endpoint used for Post request
+
+	router.HandleFunc("/customers/{customer_id:[0-9]+}/account/{account_id:[0-9]+}", ah.MakeTransaction).
+		Methods(http.MethodPost)
 
 	fmt.Printf("Server starting on address %s:%s", s.addr, s.port)
 

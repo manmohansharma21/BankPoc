@@ -1,12 +1,11 @@
-package main
+package banking
 
 import (
-	"github.com/manmohansharma21/bankpoc/app"
-	"github.com/manmohansharma21/bankpoc/logger"
+	"github.com/manmohansharma21/bankpoc/banking-lib/logger"
+	"github.com/manmohansharma21/bankpoc/banking/app"
 )
 
 func main() {
-
 	//log.Println("Starting our application...")
 	logger.Info("Starting our application...") //Equivalent to fmt.Println in standard library
 	app.Start()
@@ -15,8 +14,19 @@ func main() {
 // To run the application: SERVER_ADDRESS=localhost SERVER_PORT=8000 DB_USER=root DB_PASSWD=root DB_ADDR=localhost DB_PORT=3306 DB_NAME=banking go run main.go ---> For passing the env vars; or we can simple EXPORT indivisually or
 // or via shell script. That shell will not be commited to git, as it will be almost same as baking conf creds with application code.
 
+// DTO ------creates-----> Domain Object
 /*
 Hexagonal Architecture==Dependency Inversion ===> Highly maintainable code, agnostic to the outsider world.
+
+[User]-----Login Request----->[Auth Server]-----Token Response--->[User]----Request resource with Token in the Header----> [Resource Server (Banking)]----------Verify Token and Request----->[Auth Server]-----Token verification Request----->[Resource Server banking]-----Response----->[User]
+
+As REST APIs are stateless means they should not maintain the state; every API call coming to the server must be self contained means conrainng information for authorization for its data, verified every time. Fast and efficient mechanism is JWT token and their verification = append(As REST APIs are stateless means they should not maintain the state; every API call coming to the server must be self contained means conrainng information for authorization for its data, verified every time. Fast and efficient mechanism is JWT token and their verification.
+JWT==JSON WEB TOKEN------> [Header.Payload.Signature]
+Header contains type and hashing algorithm (HS256 etc). Payload contains information we want to transmit like issuer, expiry etc. These informations known as claims. Registerd claims are which reserved for token iformation like expiry, issued at etc. We can add our private claims also. Once token parsed, it will contain all info.
+Signature is formed by Hash of the header and payload and the secret. Secret is the key stored in the server, the token is signed by this key, maing token secure. This signature ensures unedited claims as updating claims will not have same sercret, hence placing signature properly in server is the security. Should not contain sensitive info in payload claims as that is modifiable = append(Signature is formed by Hash of the header and payload and the secret. Secret is the key stored in the server, the token is signed by this key, maing token secure. This signature ensures unedited claims as updating claims will not have same sercret, hence placing signature properly in server is the security. Should not contain sensitive info in payload claims as that is modifiable.
+
+Authentication:- Verifying identity
+Authorization:- granting or denying access to specific resources
 
 */
 /*

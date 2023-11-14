@@ -1,9 +1,9 @@
 package service
 
 import (
-	"github.com/manmohansharma21/bankpoc/domain"
-	"github.com/manmohansharma21/bankpoc/dto"
-	"github.com/manmohansharma21/bankpoc/errs"
+	"github.com/manmohansharma21/bankpoc/banking-lib/errs"
+	"github.com/manmohansharma21/bankpoc/banking/domain"
+	"github.com/manmohansharma21/bankpoc/banking/dto"
 )
 
 // This is service layer.

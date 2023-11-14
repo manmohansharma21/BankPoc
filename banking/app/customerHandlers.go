@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/manmohansharma21/bankpoc/service"
+	"github.com/manmohansharma21/bankpoc/banking/service"
 )
 
 // DTO: data Transfer Object

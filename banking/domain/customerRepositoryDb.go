@@ -6,8 +6,8 @@ import (
 
 	_ "github.com/go-sql-driver/mysql" // go-sql-driver/mysql driver for Golang to connect to MYSQL
 	"github.com/jmoiron/sqlx"
-	"github.com/manmohansharma21/bankpoc/errs"
-	"github.com/manmohansharma21/bankpoc/logger"
+	"github.com/manmohansharma21/bankpoc/banking-lib/errs"
+	"github.com/manmohansharma21/bankpoc/banking-lib/logger"
 )
 
 type customerRepositoryDb struct {

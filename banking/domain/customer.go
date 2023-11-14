@@ -1,8 +1,8 @@
 package domain
 
 import (
-	"github.com/manmohansharma21/bankpoc/dto"
-	"github.com/manmohansharma21/bankpoc/errs"
+	"github.com/manmohansharma21/bankpoc/banking-lib/errs"
+	"github.com/manmohansharma21/bankpoc/banking/dto"
 )
 
 // Secondary Port, i.e., facing to server infrastructure
